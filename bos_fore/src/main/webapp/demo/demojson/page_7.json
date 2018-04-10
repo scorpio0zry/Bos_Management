@@ -1,0 +1,7 @@
+{
+	"totalCount":100,
+	"products":[
+		{"name":"华为手机","price":"5000"},
+		{"name":"诺基亚手机","price":"2000"}
+	]
+}

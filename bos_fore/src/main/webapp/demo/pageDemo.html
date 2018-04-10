@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<!--引入bootstrap-->
+		<link rel="stylesheet" type="text/css" href="../css/bootstrap/bootstrap.css"/>
+		<script src="../js/jquery.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+		<!--引入angualr-->
+		<script type="text/javascript" src="../js/angular.min.js" ></script>
+	</head>
+	<body ng-app="page" ng-controller="pageCtrl">
+		<table class="table table-striped">
+  			<tr>
+  				<th>商品序号</th>
+  				<th>商品名称</th>
+  				<th>商品价格</th>
+  			</tr>
+  			<tr ng-repeat="product in products">
+  				<td>{{$index + 1}}</td>
+  				<td>{{product.name}}</td>
+  				<td>{{product.price}}</td>
+  			</tr>
+		</table>
+		
+
+	  <ul class="pagination pull-right">
+	    <li>
+	      <a href="#" aria-label="Previous" ng-click="prev()">
+	        <span aria-hidden="true">&laquo;</span>
+	      </a>
+	    </li>
+	    <li ng-repeat = "page in pageList" ng-class="{active:isActivePage(page)}"> 
+	    	<a href="#" ng-click="selectPage(page)">{{page}}</a>
+	    </li>
+	    <li>
+	      <a href="#" aria-label="Next" ng-click="next()">
+	        <span aria-hidden="true">&raquo;</span>
+	      </a>
+	    </li>
+	  </ul>
+		
+	</body>
+	
+	<script type="text/javascript">
+		var page = angular.module("page", []);
+		page.controller("pageCtrl", ["$scope", "$http", function($scope, $http) {
+			$scope.currentPage = 1;
+	    	$scope.pageSize = 4; //每页记录数
+	    	$scope.totalCount = 0; //总记录数
+	    	$scope.totalPages = 0; //总页数
+	    	
+	    	//加载上一页数据
+	    	$scope.prev = function(){
+	    		$scope.selectPage($scope.currentPage - 1);
+	    	}
+	    	
+	    	//加载下一页数据
+	    	$scope.next = function(){
+	    		$scope.selectPage($scope.currentPage + 1);
+	    	}
+	    	
+	    	//加载指定页数据
+	    	$scope.selectPage = function(page){
+	    		if($scope.totalPages != 0 && (page<1 || page > $scope.totalPages)){
+	    			return;
+	    		}
+	    		$http({
+	    			method:"GET",
+	    			url:"demojson/page_"+page+".json",
+	    			params:{
+	    				page:page,
+	    				pageSize:$scope.pageSize
+	    			}
+	    		}).success(function(data,status,headers,config){
+	    			//显示表格数据
+	    			$scope.products = data.products;
+	    			$scope.totalCount = data.totalCount;
+	    			$scope.totalPages = Math.ceil($scope.totalCount / $scope.pageSize);
+	    			$scope.currentPage = page;
+	    			
+	    			//显示分页工具条中的页码
+	    			var begin;
+	    			var end;
+	    			
+	    			begin = $scope.currentPage - 5;
+	    			if(begin < 1){
+	    				begin = 1;
+	    			}
+	    			
+	    			end = begin + 9;
+	    			if(end > $scope.totalPages){
+	    				end = $scope.totalPages;
+	    			}
+	    			
+	    			begin = end - 9;
+	    			if(begin < 1){
+	    				begin = 1;
+	    			}
+	    			
+	    			$scope.pageList = new Array();
+	    			
+	    			for( var i=begin;i<=end;i++){
+	    				$scope.pageList.push(i);
+	    			}
+	    		}).error(function(data, status, headers, config) {
+						// 当响应以错误状态返回时调用
+						alert("出错，请联系管理员 ");
+					});
+				}
+				
+				// 判断是否为当前页 
+				$scope.isActivePage = function(page) {
+					return page === $scope.currentPage;
+				}
+				
+				// 初始化，选中第一页
+				$scope.selectPage(1);
+			
+	    	}
+	    	
+		])
+	</script>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>行录入</title>
+		<script src="../js/jquery-1.8.3.js" type="text/javascript" charset="utf-8"></script>
+		<!--导入easyui类库-->
+		<script src="../js/easyui/jquery.easyui.min.js" type="text/javascript" charset="utf-8"></script>
+		<!--easyui国际化类库--中文-->
+		<script src="../js/easyui/locale/easyui-lang-zh_CN.js" type="text/javascript" charset="utf-8"></script>
+		<!--easyui的css文件-->
+		<link rel="stylesheet" type="text/css" href="../css/default.css" />
+		<link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css" />
+		<link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css" />
+		<script type="text/javascript">
+			var columns = [
+				[{
+					field: 'id',
+				 	title: '商品编号',
+				  	width: 120,
+				  	align: 'center',
+				  	editor:{
+				  		type:'validatebox',
+				  		options:{
+				  			required:true
+				  		}
+				  	}
+				  },{
+				  	field: 'name',
+				 	title: '商品名称',
+				  	width: 120,
+				  	align: 'center',
+				  	editor:{
+				  		type:'validatebox',
+				  		options:{
+				  			required:true
+				  		}
+				  	}
+				  },{
+				  	field: 'price',
+				 	title: '商品价格',
+				  	width: 120,
+				  	align: 'center',
+				  	editor:{
+				  		type:'validatebox',
+				  		options:{
+				  			required:true
+				  		}
+				  	}
+				  }]
+			];
+			
+			//工具栏
+			var toolbar = [{
+				id: 'button-add',
+				text: '增加',
+				iconCls: 'icon-add',
+				handler:function(){
+					if(currentEditIndex != undefined){
+						return;
+					}
+					$("#grid").datagrid('insertRow',{
+						index:0,
+						row:{}
+					});
+					
+					$("#grid").datagrid('beginEdit',0);
+					currentEditIndex = 0;
+					
+				}
+				
+			}, {
+				id: 'button-edit',
+				text: '修改',
+				iconCls: 'icon-edit',
+				handler : function(){
+					if(currentEditIndex != undefined){
+						return;
+					}
+					//获取选中行
+					var row = $("#grid").datagrid('getSelected');
+					var index = $("#grid").datagrid('getRowIndex',row);
+					
+					$("#grid").datagrid('beginEdit',index);
+					
+					currentEditIndex = index;
+				}
+				
+			}, {
+				id: 'button-save',
+				text: '保存',
+				iconCls: 'icon-save',
+				handler:function(){
+					$("#grid").datagrid('endEdit',currentEditIndex);
+				}
+				
+			}, {
+				id:'button-cancel',
+				text:'取消',
+				iconCls:'icon-cancel',
+				handler:function(){
+					$("#grid").datagrid('cancelEdit',currentEditIndex);
+				}
+			}];
+			
+			var currentEditIndex;
+			
+			$(function(){
+				$("#grid").datagrid({
+					toolbar: toolbar,
+					columns:columns,
+					url:'product.json',
+					singleSelect:true,
+					onAfterEdit:function(rowIndex,rowData,changes){
+						//保存成功
+						currentEditIndex = undefined;
+					},
+					onCancelEdit:function(rowIndex,rowData){
+						currentEditIndex = undefined;
+					}
+				})
+			})
+		
+		</script>
+	</head>
+	<body>
+		
+		<table id="grid"></table>
+		
+	</body>
+</html>

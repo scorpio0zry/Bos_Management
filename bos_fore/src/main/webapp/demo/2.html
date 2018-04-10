@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>angular练习2</title>
+		<script src="../js/angular.min.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+		<div ng-app="myapp" ng-controller="myctrl">
+			<table width="100%" border="1">
+				<tr>
+					<th>商品序号</th>
+					<th>商品编号</th>
+					<th>商品名称</th>
+					<th>价格</th>
+				</tr>
+				<tr ng-repeat="product in products">
+					<th>{{$index + 1}}</th>
+					<th>{{product.id}}</th>
+					<th>{{product.name}}</th>
+					<th>{{product.price}}</th>
+				</tr>
+			</table>
+		</div>
+	</body>
+	<script type="text/javascript">
+		var myapp = angular.module("myapp",[]);
+		myapp.controller("myctrl",["$scope",function($scope){
+			$scope.products=[{
+				id:"ql001",
+				name:"可乐",
+				price:3
+			},{
+				id:"ql002",
+				name:"雪碧",
+				price:3
+			},{
+				id:"ql003",
+				name:"奶茶",
+				price:5
+			}]
+		}])
+	</script>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>BOS物流管理系统</title>
+		<script src="js/jquery-1.8.3.js" type="text/javascript" charset="utf-8"></script>
+		<!--导入easyui类库-->
+		<script src="js/easyui/jquery.easyui.min.js" type="text/javascript" charset="utf-8"></script>
+		<!--easyui国际化类库--中文-->
+		<script src="js/easyui/locale/easyui-lang-zh_CN.js" type="text/javascript" charset="utf-8"></script>
+		<!--easyui的css文件-->
+		<link rel="stylesheet" type="text/css" href="css/default.css" />
+		<link rel="stylesheet" type="text/css" href="js/easyui/themes/default/easyui.css" />
+		<link rel="stylesheet" type="text/css" href="js/easyui/themes/icon.css" />
+
+		<!--引入ZTree-->
+		<script src="js/ztree/jquery.ztree.all-3.5.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" type="text/css" href="js/ztree/zTreeStyle.css" />
+	</head>
+	<script type="text/javascript">
+		$(function() {
+			/*设定左侧树状菜单*/
+			var setting = {
+				data: {
+					simpleData: {
+						enable: true
+					}
+				},
+				callback: {
+					onClick: onClick
+				}
+			};
+
+			var zNodes = [{
+					id: 1,
+					pId: 0,
+					name: "基础档案",
+					open: true
+				},
+				{
+					id: 11,
+					pId: 1,
+					name: "基础档案设置"
+				},
+				{
+					id: 12,
+					pId: 1,
+					name: "收派标准",
+					page: "pages/base/standard.html"
+				},
+				{
+					id: 13,
+					pId: 1,
+					name: "班车管理"
+				},
+				{
+					id: 14,
+					pId: 1,
+					name: "快递员设置/替班",
+					page:"pages/base/courier.html"
+				},
+				{
+					id: 15,
+					pId: 1,
+					name: "区域设置",
+					page:"pages/base/area.html"
+				},
+				{
+					id: 16,
+					pId: 1,
+					name: "管理分区",
+					page:"pages/base/sub_area.html"
+				},
+				{
+					id: 17,
+					pId: 1,
+					name: "管理定区/调度调班",
+					page:"pages/base/fixed_area.html"
+				},
+				{
+					id: 18,
+					pId: 1,
+					name: "收派时间管理"
+				}
+			];
+
+			$.fn.zTree.init($("#tree"), setting, zNodes);
+
+			/*选项版右键菜单设置*/
+			$("#tt").tabs({
+				onContextMenu: function(e, title, index) {
+					/*阻止默认菜单*/
+					e.preventDefault();
+					/*显示右键菜单*/
+					$("#mm").menu('show', {
+						left: e.pageX,
+						top: e.pageY
+					});
+				}
+			})
+		});
+
+		/*设定点击菜单后在右侧弹出选项卡*/
+		function onClick(event, treeId, treeNode, clickFlag) {
+			if(treeNode.pId != null) {
+				/*如果选项卡已经打开,则选中*/
+				/*var content = "<div data-options='fit:true'><iframe src='"
+				+treeNode.page
+				+"' scrolling='auto' style='width:100%;height:100%;border:0;'></iframe></div>";*/
+				var content = '<div style="width:100%;height:100%;overflow:hidden;">' +
+					'<iframe src="' +
+					treeNode.page +
+					'" scrolling="auto" style="width:100%;height:100%;border:0;" ></iframe></div>';
+
+				if($("#tt").tabs('exists', treeNode.name)) {
+					$("#tt").tabs('select', treeNode.name);
+				} else {
+					/*没有,则打开选项卡*/
+					$("#tt").tabs('add', {
+						title: treeNode.name,
+						closable: true,
+						content: content,
+						tools:[{ 
+								iconCls:'icon-reload', // 刷新按钮
+								handler : function(){
+									var tab = $('#tt').tabs('getTab',treeNode.name);
+									$("iframe[src='"+treeNode.page+"']").get(0).contentWindow.location.reload(true);
+								}
+							}] 
+					})
+				}
+			}
+		}
+	</script>
+
+	<body>
+		<!--
+        	作者：63168479@qq.com
+        	时间：2018-03-01
+        	描述：
+        -->
+
+		<!--easyui-布局框架-->
+		<div id="cc" class="easyui-layout" data-options="fit:true">
+			<div data-options="region:'north'" style="height:100px;">
+				<div style="position: absolute; right: 5px; bottom: 10px; ">
+					<a href="javascript:void(0)" id="control" class="easyui-menubutton" data-options="menu:'#mc',iconCls:'icon-edit'">控制版面</a>
+				</div>
+			</div>
+			<div data-options="region:'south'" style="height:80px;"></div>
+			<div data-options="region:'west',title:'West',split:true" style="width:180px; border: 0px;">
+				<div id="aa" class="easyui-accordion" data-options="fit:true">
+					<div title="基本功能" data-options="iconCls:'icon-save'" style="overflow:auto;padding:10px;">
+						<!--树状菜单--ztree插件-->
+						<ul id="tree" class="ztree"></ul>
+					</div>
+					<div title="菜单管理" data-options="iconCls:'icon-tip',selected:true" style="padding:10px;">
+					</div>
+				</div>
+			</div>
+			<div data-options="region:'center'" style="background:#eee;border:0px;">
+				<!--选项版-->
+				<div class="easyui-tabs" id="tt" data-options="fit:true">
+				</div>
+			</div>
+		</div>
+
+		<!--选项版右键菜单设置-->
+		<div id="mm" class="easyui-menu" style="width:120px;">
+			<div>关闭其他窗口</div>
+			<div>关闭当前窗口</div>
+			<div class="menu-sep"></div>
+			<div data-options="iconCls:'icon-cancel'">关闭其他窗口</div>
+		</div>
+
+		<!--控制版面下拉菜单-->
+		<div id="mc" style="width:150px;">
+			<div data-options="iconCls:'icon-undo'">修改密码</div>
+			<div data-options="iconCls:'icon-redo'">联系管理员</div>
+			<div class="menu-sep"></div>
+			<div data-options="iconCls:'icon-remove'">退出系统</div>
+		</div>
+	</body>
+</html>

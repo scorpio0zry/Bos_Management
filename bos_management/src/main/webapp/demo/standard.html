@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>消息窗口练习</title>
+		<script src="../js/jquery-1.8.3.js" type="text/javascript" charset="utf-8"></script>
+		<!--导入easyui类库-->
+		<script src="../js/easyui/jquery.easyui.min.js" type="text/javascript" charset="utf-8"></script>
+		<!--easyui国际化类库--中文-->
+		<script src="../js/easyui/locale/easyui-lang-zh_CN.js" type="text/javascript" charset="utf-8"></script>
+		<!--easyui的css文件-->
+		<link rel="stylesheet" type="text/css" href="../css/default.css" />
+		<link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css" />
+		<link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css" />
+		
+		<script type="text/javascript">
+			$(function(){
+				//$.messager.alert("标题","内容","warning");
+				
+				/*$.messager.confirm("删除提示","确定删除吗？",function(result){
+					if(result){
+						alert("执行删除...");
+					}else{
+						alert("取消删除...");
+					}
+				});*/
+				
+				/*右下角弹窗*/
+				$.messager.show({
+					title: "标题",
+					msg : "减价大促销 ， <a href='#'>请猛戳这里</a>",
+					timeout: 5000 // 5秒后自动消失
+				});
+			})
+		</script>
+	</head>
+	<body>
+		
+	</body>
+</html>
